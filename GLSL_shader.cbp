@@ -13,9 +13,12 @@
 				<Option compiler="gnu_gcc_compiler_1110" />
 				<Compiler>
 					<Add option="-std=c++17" />
+					<Add option="-m64" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
+					<Add option="-static" />
+					<Add option="-m64" />
 					<Add library="D:/__IDE/__compilers/Dependencies/libglfw3.a" />
 					<Add library="D:/__IDE/__compilers/Dependencies/libgdi32.a" />
 					<Add library="D:/__IDE/__compilers/Dependencies/glew32s.lib" />
