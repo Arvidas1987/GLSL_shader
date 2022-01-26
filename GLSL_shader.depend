@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1643215828 source:e:\c++\_git\glsl_shader\main.cpp
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+
