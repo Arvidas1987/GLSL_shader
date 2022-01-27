@@ -27,8 +27,10 @@ if "undefined reference..."
 #define WRITELN(x) std::cout << x << "\n";
 #define NEWLN() std::cout << "\n";
 #
+#include "GLSL_shader.hpp"
+#
 
-static const char * vs_source[] ={
+const char * vs_source[] ={
     R"glsl(
         "#version 420 core
             void main(void){
@@ -37,7 +39,7 @@ static const char * vs_source[] ={
         )glsl"
 };
 
-static const char * fs_source[] = {
+const char * fs_source[] = {
     R"glsl(
         #version 420 core
         out vec4 color;
@@ -46,23 +48,6 @@ static const char * fs_source[] = {
         }
     )glsl"
 };
-
-void compile_shader( const GLuint &program,
-                        GLenum shader_type,
-                        const GLchar *const* string )
-{
-//utworzenie i kompilacja shadera <shader_type>
-GLuint temp_shader = glCreateShader(shader_type);
-glShaderSource(temp_shader, 1, string, nullptr);
-glCompileShader(temp_shader);
-
-glAttachShader(program, temp_shader);
-glLinkProgram(program);
-
-//usuniecie shaderow, bo znajduja sie juz w programie
-glDeleteShader(temp_shader);
-
-}
 
 int GLFW_init()
 {
@@ -107,7 +92,6 @@ int main()
 {
     GLFW_init();
 
-
     /* Create a windowed mode window and its OpenGL context */
     GLFWwindow* window = glfwCreateWindow( 640, 480, "GLFW_64bits", NULL, NULL );
     if ( window == nullptr ) {
@@ -120,9 +104,9 @@ int main()
 
     GLEW_init();
 
-GLuint programm =  glCreateProgram();
-compile_shader( programm, GL_VERTEX_SHADER, vs_source );
-compile_shader( programm, GL_FRAGMENT_SHADER, fs_source );
+    GLSL_shader punkt;
+    punkt.compile_shader( GL_VERTEX_SHADER, vs_source );
+    punkt.compile_shader( GL_FRAGMENT_SHADER, fs_source );
 
     /* Loop until the user closes the window */
     while ( !glfwWindowShouldClose(window) )
@@ -132,7 +116,7 @@ compile_shader( programm, GL_FRAGMENT_SHADER, fs_source );
         glClear( GL_COLOR_BUFFER_BIT );
 
 
-        glUseProgram(programm);
+        punkt.use_program();
         glPointSize(40.0f);
         glDrawArrays(GL_POINTS, 0, 1);
 
