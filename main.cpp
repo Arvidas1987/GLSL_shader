@@ -28,9 +28,6 @@ if "undefined reference..."
 #define NEWLN() std::cout << "\n";
 #
 
-
-GLuint compile_shaders()
-{
 static const char * vs_source[] ={
     R"glsl(
         "#version 420 core
@@ -50,27 +47,21 @@ static const char * fs_source[] = {
     )glsl"
 };
 
-//utworzenie i kompilacja shadera wiercholkow
-GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-glShaderSource(vertex_shader, 1, vs_source, nullptr);
-glCompileShader(vertex_shader);
+void compile_shader( const GLuint &program,
+                        GLenum shader_type,
+                        const GLchar *const* string )
+{
+//utworzenie i kompilacja shadera <shader_type>
+GLuint temp_shader = glCreateShader(shader_type);
+glShaderSource(temp_shader, 1, string, nullptr);
+glCompileShader(temp_shader);
 
-//utworzenie i kompilacja shadera fragmentow
-GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-glShaderSource(fragment_shader, 1, fs_source, nullptr);
-glCompileShader(fragment_shader);
-
-//utworzenie programu, dodanie shaderow i ich polaczenie
-GLuint program = glCreateProgram();
-glAttachShader(program, vertex_shader);
-glAttachShader(program, fragment_shader);
+glAttachShader(program, temp_shader);
 glLinkProgram(program);
 
 //usuniecie shaderow, bo znajduja sie juz w programie
-glDeleteShader(vertex_shader);
-glDeleteShader(fragment_shader);
+glDeleteShader(temp_shader);
 
-return program;
 }
 
 
@@ -124,7 +115,9 @@ int main()
 
 
 
-GLuint programm = compile_shaders();
+GLuint programm =  glCreateProgram();
+compile_shader( programm, GL_VERTEX_SHADER, vs_source );
+compile_shader( programm, GL_FRAGMENT_SHADER, fs_source );
 
     /* Loop until the user closes the window */
     while ( !glfwWindowShouldClose(window) )
@@ -132,6 +125,7 @@ GLuint programm = compile_shaders();
         /* Render here */
         glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT );
+
 
         glUseProgram(programm);
         glPointSize(40.0f);
