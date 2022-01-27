@@ -64,11 +64,9 @@ glDeleteShader(temp_shader);
 
 }
 
-
-int main()
+int GLFW_init()
 {
-
-    /* Initialize the library */
+    /* Initialize the GLFW library */
     if ( glfwInit() == GLFW_FALSE ){
         WRITELN( "[PL] Problem z inicjalizacja GLFW." )
         WRITELN( "[EN] GLFW initialization issue." )
@@ -78,20 +76,12 @@ int main()
         WRITELN( "[PL] Inicjalizacja GLFW:  OK" );
         WRITELN( "[EN] GLFW inicjalization: OK" );
         NEWLN()
-        //return 0;
+        return 0;
     }
+}
 
-    /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* window = glfwCreateWindow( 640, 480, "GLFW_64bits", NULL, NULL );
-    if ( window == nullptr )
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
+int GLEW_init()
+{
     ///* Initialize the GLEW library *///
     ////do dzialania biblioteki GLEW musi byc znany kontekst OpenGL
     GLenum GLEW_init_error = glewInit();
@@ -109,11 +99,26 @@ int main()
         WRITELN( "[PL] Inicjalizacja GLEW:  OK" );
         WRITELN( "[EN] GLEW inicjalization: OK" );
         NEWLN()
-        //return 0;
+        return 0;
+    }
+}
+
+int main()
+{
+    GLFW_init();
+
+
+    /* Create a windowed mode window and its OpenGL context */
+    GLFWwindow* window = glfwCreateWindow( 640, 480, "GLFW_64bits", NULL, NULL );
+    if ( window == nullptr ) {
+        glfwTerminate();
+        return -1;
     }
 
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
 
-
+    GLEW_init();
 
 GLuint programm =  glCreateProgram();
 compile_shader( programm, GL_VERTEX_SHADER, vs_source );
