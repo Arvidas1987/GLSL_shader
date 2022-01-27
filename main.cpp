@@ -31,22 +31,22 @@ if "undefined reference..."
 #
 
 const char * vs_source[] ={
-    R"glsl(
-        "#version 420 core
-            void main(void){
-                gl_Position = vec4(0.0, 0.0, 0.5, 1.0);
-            }
-        )glsl"
+R"glsl(
+    #version 420 core
+    void main(){
+        gl_Position = vec4(0.0, 0.0, 0.5, 1.0);
+    }
+)glsl"
 };
 
 const char * fs_source[] = {
-    R"glsl(
-        #version 420 core
-        out vec4 color;
-        void main(void){
-            color = vec4(0.0, 0.8, 1.0, 1.0);
-        }
-    )glsl"
+R"glsl(
+    #version 420 core
+    out vec4 color;
+    void main(){
+        color = vec4(0.0, 0.8, 1.0, 1.0);
+    }
+)glsl"
 };
 
 int GLFW_init()
@@ -105,6 +105,7 @@ int main()
     GLEW_init();
 
     GLSL_shader punkt;
+    punkt.debug();
     punkt.compile_shader( GL_VERTEX_SHADER, vs_source );
     punkt.compile_shader( GL_FRAGMENT_SHADER, fs_source );
 
