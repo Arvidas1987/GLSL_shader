@@ -12,9 +12,9 @@
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_1110" />
 				<Compiler>
-					<Add option="-std=c++17" />
 					<Add option="-m64" />
 					<Add option="-g" />
+					<Add option="-std=c++20" />
 				</Compiler>
 				<Linker>
 					<Add option="-static" />
@@ -43,6 +43,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="GLSL_shader.cpp" />
+		<Unit filename="GLSL_shader.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

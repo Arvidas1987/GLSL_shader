@@ -107,6 +107,7 @@ int main()
     GLSL_shader punkt;
     punkt.debug();
     punkt.compile_shader( GL_VERTEX_SHADER, vs_source );
+   // punkt.debug();
     punkt.compile_shader( GL_FRAGMENT_SHADER, fs_source );
 
     /* Loop until the user closes the window */
@@ -118,6 +119,7 @@ int main()
 
 
         punkt.use_program();
+
         glPointSize(40.0f);
         glDrawArrays(GL_POINTS, 0, 1);
 

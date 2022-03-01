@@ -8,7 +8,7 @@ class GLSL_shader
 {
 private:
     GLuint m_program;
-    bool m_debug;
+    static bool static_GLSL_shader_debug;
 public:
     GLSL_shader();
     ~GLSL_shader();
@@ -16,7 +16,7 @@ public:
     void compile_shader( GLenum shader_type, const GLchar *const *string );
     void use_program();
 
-    void debug();
+    static void debug();
 };
 #
 #endif // _GLSL_SHADER_HPP_
