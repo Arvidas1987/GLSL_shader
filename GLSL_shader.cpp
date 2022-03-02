@@ -1,13 +1,14 @@
 #include "GLSL_shader.hpp"
 #include <iostream>
-#include <string>
 #include <utility> // for std::move()
 
 bool GLSL_shader::static_GLSL_shader_debug = false;
 
-std::string  get_shader_info_log( GLuint shader )
+//-----------------------------------------------------------------------------
+//                      get_shader_info_log
+//-----------------------------------------------------------------------------
+std::string get_shader_info_log( GLuint shader )
 {
-    std::string temp;
     GLint log_length;
     glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &log_length );
 
@@ -15,12 +16,12 @@ std::string  get_shader_info_log( GLuint shader )
     glGetShaderInfoLog( shader, log_length, nullptr, shader_info_log );
     shader_info_log[log_length]='\0';
 
-    temp.append( shader_info_log );
+    std::string temp(shader_info_log);
     temp.shrink_to_fit();
 
     delete[] shader_info_log;
 
-    return std::move(temp);
+    return temp;
 }
 
 //-----------------------------------------------------------------------------
@@ -38,26 +39,35 @@ GLSL_shader::GLSL_shader():m_program(0)
 GLSL_shader::~GLSL_shader()
 {
     glDeleteProgram( m_program );
-
+/*
     if ( static_GLSL_shader_debug ){
-        GLint is_program_delete_status_false;
-        glGetProgramiv(m_program, GL_DELETE_STATUS, &is_program_delete_status_false);
+        GLint is_program_delete_status_equals_false;
+        glGetProgramiv(m_program, GL_DELETE_STATUS, &is_program_delete_status_equals_false);
 
-        if ( is_program_delete_status_false == GL_FALSE ){
+        if ( is_program_delete_status_equals_false == GL_FALSE ){
             std::cout << "Nie wywolano funkcji 'glDeleteProgram()'\n";
         } else {
             std::cout << "Wywolano funkcje 'glDeleteProgram()'\n";
         }
     }
+*/
 }
 
 //-----------------------------------------------------------------------------
 //                     compile_shader()
 //-----------------------------------------------------------------------------
-void GLSL_shader::compile_shader( GLenum shader_type,
+void GLSL_shader::compile_shader( const std::string shader_name,
+                                  GLenum shader_type,
                                   const GLchar *const *shader_source_string )
 {
     std::string Error_messages;
+
+    if( static_GLSL_shader_debug ){
+        Error_messages.append("==================== ")
+                      .append(shader_name)
+                      .append(" ====================\n");
+    }
+
 
     //utworzenie i kompilacja shadera <shader_type>
     GLuint temp_shader = glCreateShader(shader_type);
@@ -66,14 +76,14 @@ void GLSL_shader::compile_shader( GLenum shader_type,
     glCompileShader(temp_shader);
 
     if( static_GLSL_shader_debug ){
-        GLint is_compile_shader_status_false;
-        glGetShaderiv( temp_shader, GL_COMPILE_STATUS, &is_compile_shader_status_false );
+        GLint is_compile_shader_status_equals_false;
+        glGetShaderiv( temp_shader, GL_COMPILE_STATUS, &is_compile_shader_status_equals_false );
 
-        if( is_compile_shader_status_false == GL_FALSE ){
-            Error_messages.append( "Niepoprawna kompilacja shadera: " )
-                          .append( *shader_source_string )//tu jest dobrze
+        if( is_compile_shader_status_equals_false == GL_FALSE ){
+            Error_messages.append( "Niepoprawna kompilacja shadera: \n" )
+                          .append( *shader_source_string )
                           .append( "\n" )
-                          .append( get_shader_info_log( temp_shader ) )
+                          .append( std::move( get_shader_info_log( temp_shader ) ) )
                           .append( "\n" );
         }
     }
@@ -82,32 +92,34 @@ void GLSL_shader::compile_shader( GLenum shader_type,
 
     glLinkProgram(m_program);
     if( static_GLSL_shader_debug ){
-        GLint is_link_shader_status_false;
-        glGetShaderiv( temp_shader, GL_LINK_STATUS, &is_link_shader_status_false );
+        GLint is_link_shader_status_equals_false;
+        glGetShaderiv( temp_shader, GL_LINK_STATUS, &is_link_shader_status_equals_false );
 
-        if( is_link_shader_status_false == GL_FALSE ){
+        if( is_link_shader_status_equals_false == GL_FALSE ){
             Error_messages.append( "Niepoprawna konsolidacja shadera.\n" )
-                          .append( get_shader_info_log( temp_shader ) )
+                          .append( std::move( get_shader_info_log( temp_shader ) ) )
                           .append( "\n" );
         }
     }
 
     if( static_GLSL_shader_debug ){
         glValidateProgram(m_program);
-        GLint is_validate_program_status_false;
-        glGetShaderiv( temp_shader, GL_VALIDATE_STATUS, &is_validate_program_status_false );
+        GLint is_validate_program_status_equals_false;
+        glGetShaderiv( temp_shader, GL_VALIDATE_STATUS, &is_validate_program_status_equals_false );
 
-        if( is_validate_program_status_false == GL_FALSE ){
+        if( is_validate_program_status_equals_false == GL_FALSE ){
             Error_messages.append( "Niepoprawna walidacja programu.\n")
-                          .append( get_shader_info_log( temp_shader ) )
+                          .append( std::move( get_shader_info_log( temp_shader ) ) )
                           .append( "\n" );
         }
     }
     //usuniecie shaderow, bo znajduja sie juz w programie
     glDeleteShader(temp_shader);
 
-    Error_messages.shrink_to_fit();
-    std::cout << Error_messages;
+    if( static_GLSL_shader_debug ){
+        Error_messages.shrink_to_fit();
+        std::cout << Error_messages;
+    }
 }
 
 //-----------------------------------------------------------------------------

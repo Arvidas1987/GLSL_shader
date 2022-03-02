@@ -4,6 +4,8 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #
+#include <string>
+#
 class GLSL_shader
 {
 private:
@@ -13,7 +15,9 @@ public:
     GLSL_shader();
     ~GLSL_shader();
 
-    void compile_shader( GLenum shader_type, const GLchar *const *string );
+    void compile_shader( const std::string shader_name,
+                         GLenum shader_type,
+                         const GLchar *const *shader_source_string );
     void use_program();
 
     static void debug();

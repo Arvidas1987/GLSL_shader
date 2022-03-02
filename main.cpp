@@ -106,9 +106,9 @@ int main()
 
     GLSL_shader punkt;
     punkt.debug();
-    punkt.compile_shader( GL_VERTEX_SHADER, vs_source );
-   // punkt.debug();
-    punkt.compile_shader( GL_FRAGMENT_SHADER, fs_source );
+
+    punkt.compile_shader( "punkt-shader wierzcholkow", GL_VERTEX_SHADER, vs_source );
+    punkt.compile_shader( "punkt-shader fragmentow", GL_FRAGMENT_SHADER, fs_source );
 
     /* Loop until the user closes the window */
     while ( !glfwWindowShouldClose(window) )
