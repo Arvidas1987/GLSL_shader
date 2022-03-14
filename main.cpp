@@ -18,16 +18,17 @@ if "undefined reference..."
     - libglu32.a
     - libopengl32.a
 */
+
+#define _DEBUG_
 #
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #
-#include <iostream>
-#define WRITELN(x) std::cout << x << "\n";
-#define NEWLN() std::cout << "\n";
+#include "macro_iostream.hpp"
 #
 #include "GLSL_shader.hpp"
+#include "GL_functions.hpp" // GL_DEBUG_MACRO()
 #
 
 const char * vs_source[] ={
@@ -114,14 +115,14 @@ int main()
     while ( !glfwWindowShouldClose(window) )
     {
         /* Render here */
-        glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        GL_DEBUG_MACRO( glClearColor( 0.5f, 0.5f, 0.5f, 1.0f ) )
+        GL_DEBUG_MACRO( glClear( GL_COLOR_BUFFER_BIT ) )
 
 
         punkt.use_program();
 
-        glPointSize(40.0f);
-        glDrawArrays(GL_POINTS, 0, 1);
+        GL_DEBUG_MACRO( glPointSize(40.0f) )
+        GL_DEBUG_MACRO( glDrawArrays(GL_POINTS, 0, 1) )
 
 
         /* Swap front and back buffers */

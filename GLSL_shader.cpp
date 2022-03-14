@@ -1,19 +1,22 @@
 #include "GLSL_shader.hpp"
 #include <iostream>
-#include <utility> // for std::move()
-
+#include <utility> // std::move()
+#
+#include "GL_functions.hpp" // GL_DEBUG_MACRO()
+#
+//============================================================================//
 bool GLSL_shader::static_GLSL_shader_debug = false;
 
 //-----------------------------------------------------------------------------
-//                      get_shader_info_log
+//                      get_shader_info_log()
 //-----------------------------------------------------------------------------
 std::string get_shader_info_log( GLuint shader )
 {
-    GLint log_length;
-    glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &log_length );
+    GLint log_length{};
+    GL_DEBUG_MACRO( glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &log_length ) )
 
     char *shader_info_log = new char[log_length+1];
-    glGetShaderInfoLog( shader, log_length, nullptr, shader_info_log );
+    GL_DEBUG_MACRO( glGetShaderInfoLog( shader, log_length, nullptr, shader_info_log ) )
     shader_info_log[log_length]='\0';
 
     std::string temp(shader_info_log);
@@ -30,7 +33,7 @@ std::string get_shader_info_log( GLuint shader )
 //-----------------------------------------------------------------------------
 GLSL_shader::GLSL_shader():m_program(0)
 {
-    m_program = glCreateProgram();
+    GL_DEBUG_MACRO( m_program = glCreateProgram() )
 }
 
 //-----------------------------------------------------------------------------
@@ -38,19 +41,7 @@ GLSL_shader::GLSL_shader():m_program(0)
 //-----------------------------------------------------------------------------
 GLSL_shader::~GLSL_shader()
 {
-    glDeleteProgram( m_program );
-/*
-    if ( static_GLSL_shader_debug ){
-        GLint is_program_delete_status_equals_false;
-        glGetProgramiv(m_program, GL_DELETE_STATUS, &is_program_delete_status_equals_false);
-
-        if ( is_program_delete_status_equals_false == GL_FALSE ){
-            std::cout << "Nie wywolano funkcji 'glDeleteProgram()'\n";
-        } else {
-            std::cout << "Wywolano funkcje 'glDeleteProgram()'\n";
-        }
-    }
-*/
+    GL_DEBUG_MACRO( glDeleteProgram( m_program ) )
 }
 
 //-----------------------------------------------------------------------------
@@ -70,14 +61,16 @@ void GLSL_shader::compile_shader( const std::string shader_name,
 
 
     //utworzenie i kompilacja shadera <shader_type>
-    GLuint temp_shader = glCreateShader(shader_type);
-    glShaderSource(temp_shader, 1, shader_source_string, nullptr);
+    GL_DEBUG_MACRO( GLuint temp_shader = glCreateShader(shader_type) )
+    GL_DEBUG_MACRO( glShaderSource(temp_shader, 1, shader_source_string, nullptr) )
 
-    glCompileShader(temp_shader);
+    GL_DEBUG_MACRO( glCompileShader(temp_shader) )
 
     if( static_GLSL_shader_debug ){
         GLint is_compile_shader_status_equals_false;
-        glGetShaderiv( temp_shader, GL_COMPILE_STATUS, &is_compile_shader_status_equals_false );
+        GL_DEBUG_MACRO( glGetShaderiv( temp_shader,
+                                       GL_COMPILE_STATUS,
+                                       &is_compile_shader_status_equals_false ) )
 
         if( is_compile_shader_status_equals_false == GL_FALSE ){
             Error_messages.append( "Niepoprawna kompilacja shadera: \n" )
@@ -88,12 +81,14 @@ void GLSL_shader::compile_shader( const std::string shader_name,
         }
     }
 
-    glAttachShader(m_program, temp_shader);
+    GL_DEBUG_MACRO( glAttachShader(m_program, temp_shader) )
 
-    glLinkProgram(m_program);
+    GL_DEBUG_MACRO( glLinkProgram(m_program) )
     if( static_GLSL_shader_debug ){
         GLint is_link_shader_status_equals_false;
-        glGetShaderiv( temp_shader, GL_LINK_STATUS, &is_link_shader_status_equals_false );
+        GL_DEBUG_MACRO( glGetShaderiv( temp_shader,
+                                       GL_LINK_STATUS,
+                                       &is_link_shader_status_equals_false ) )
 
         if( is_link_shader_status_equals_false == GL_FALSE ){
             Error_messages.append( "Niepoprawna konsolidacja shadera.\n" )
@@ -103,9 +98,11 @@ void GLSL_shader::compile_shader( const std::string shader_name,
     }
 
     if( static_GLSL_shader_debug ){
-        glValidateProgram(m_program);
+        GL_DEBUG_MACRO( glValidateProgram(m_program) )
         GLint is_validate_program_status_equals_false;
-        glGetShaderiv( temp_shader, GL_VALIDATE_STATUS, &is_validate_program_status_equals_false );
+        GL_DEBUG_MACRO( glGetShaderiv( temp_shader,
+                        GL_VALIDATE_STATUS,
+                        &is_validate_program_status_equals_false ) )
 
         if( is_validate_program_status_equals_false == GL_FALSE ){
             Error_messages.append( "Niepoprawna walidacja programu.\n")
@@ -114,7 +111,7 @@ void GLSL_shader::compile_shader( const std::string shader_name,
         }
     }
     //usuniecie shaderow, bo znajduja sie juz w programie
-    glDeleteShader(temp_shader);
+    GL_DEBUG_MACRO( glDeleteShader(temp_shader) )
 
     if( static_GLSL_shader_debug ){
         Error_messages.shrink_to_fit();
@@ -126,7 +123,7 @@ void GLSL_shader::compile_shader( const std::string shader_name,
 //                          useProgram()
 //-----------------------------------------------------------------------------
 void GLSL_shader::use_program(){
-    glUseProgram( m_program );
+    GL_DEBUG_MACRO( glUseProgram( m_program ) )
 }
 
 //-----------------------------------------------------------------------------
