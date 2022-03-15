@@ -45,6 +45,9 @@
 		</Compiler>
 		<Unit filename="GLSL_shader.cpp" />
 		<Unit filename="GLSL_shader.hpp" />
+		<Unit filename="GL_functions.cpp" />
+		<Unit filename="GL_functions.hpp" />
+		<Unit filename="macro_iostream.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

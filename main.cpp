@@ -18,8 +18,6 @@ if "undefined reference..."
     - libglu32.a
     - libopengl32.a
 */
-
-#define _DEBUG_
 #
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -106,7 +104,7 @@ int main()
     GLEW_init();
 
     GLSL_shader punkt;
-    punkt.debug();
+    //punkt.debug();
 
     punkt.compile_shader( "punkt-shader wierzcholkow", GL_VERTEX_SHADER, vs_source );
     punkt.compile_shader( "punkt-shader fragmentow", GL_FRAGMENT_SHADER, fs_source );

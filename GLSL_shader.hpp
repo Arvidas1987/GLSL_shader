@@ -11,11 +11,12 @@ class GLSL_shader
 private:
     GLuint m_program;
     static bool static_GLSL_shader_debug;
+    bool is_printed_error;
 public:
     GLSL_shader();
     ~GLSL_shader();
 
-    // [PL] compile_shader: Metoda pobiera zrodlo shadera, kompiluje i dol¹cza do programu
+    // [PL] compile_shader: Metoda pobiera zrodlo shadera, kompiluje i dolacza do programu
     // [EN] compile_shader: Method getting shader source, compiling and attaching to program
     //
     // shaderType:
